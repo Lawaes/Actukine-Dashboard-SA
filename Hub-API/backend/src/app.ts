@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import { errorHandler } from './utils/errors';
 import routes from './routes';
 import { config } from './config';
+import { Request, Response, NextFunction } from 'express';
 
 // Création de l'application Express
 const app = express();
@@ -36,7 +37,10 @@ app.use('*', (req, res) => {
 });
 
 // Middleware de gestion des erreurs
-app.use(errorHandler);
+app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Une erreur est survenue sur le serveur' });
+});
 
 // Connexion à MongoDB
 const connectDB = async () => {

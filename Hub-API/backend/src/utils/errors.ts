@@ -18,33 +18,9 @@ export class ApiError extends Error {
 /**
  * Middleware de gestion globale des erreurs
  */
-export const errorHandler = (err: any, req: any, res: any, next: any) => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'Erreur serveur';
-  
-  // Enregistrer l'erreur dans les logs (en production, utilisez un service de logging)
-  console.error(`[${new Date().toISOString()}] Erreur: ${message}`, {
-    stack: err.stack,
-    path: req.path,
-    method: req.method,
-    statusCode
-  });
-
-  // Réponse en mode développement - inclure la stack trace
-  if (process.env.NODE_ENV === 'development') {
-    return res.status(statusCode).json({
-      success: false,
-      message,
-      stack: err.stack,
-      isOperational: err.isOperational || false
-    });
-  }
-
-  // Réponse en mode production - sans stack trace
-  return res.status(statusCode).json({
-    success: false,
-    message: err.isOperational ? message : 'Une erreur est survenue. L\'équipe technique a été notifiée.'
-  });
+export const errorHandler = (err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Une erreur est survenue sur le serveur' });
 };
 
 /**
@@ -69,4 +45,10 @@ export const setupUnhandledExceptionHandlers = () => {
       process.exit(1);
     }
   });
+};
+
+export const asyncHandler = (fn: Function) => {
+  return (_req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(_req, res, next)).catch(next);
+  };
 }; 

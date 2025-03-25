@@ -210,21 +210,15 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
  * @route GET /api/users/profile
  * @access Private
  */
-export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
+export const getProfile = async (_req: Request, res: Response) => {
   try {
-    const user = req.user as IUser;
-    
+    const user = await User.findById(res.locals.user._id).select('-password');
+    if (!user) {
+      throw new ApiError('Utilisateur non trouvé', 404);
+    }
     res.status(200).json({
       success: true,
-      data: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
-      }
+      data: user
     });
   } catch (error) {
     next(error);

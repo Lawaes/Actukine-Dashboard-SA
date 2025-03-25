@@ -1,4 +1,5 @@
 import express from 'express';
+import { authenticate } from '../middlewares/auth';
 import {
   getPosts,
   getPostById,
@@ -8,7 +9,6 @@ import {
   updateStatus,
   validateTask
 } from '../controllers/postController';
-import { authenticate, authorize } from '../middlewares/auth';
 
 const router = express.Router();
 

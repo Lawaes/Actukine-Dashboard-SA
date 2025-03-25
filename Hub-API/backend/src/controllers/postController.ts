@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
-import Post, { IPost } from '../models/Post';
+import Post from '../models/Post';
 import { ApiError } from '../utils/errors';
 
 /**
