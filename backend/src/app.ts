@@ -5,7 +5,6 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import { errorHandler } from './utils/errors';
 import routes from './routes';
 import { config } from './config';
 import { Request, Response, NextFunction } from 'express';
@@ -29,7 +28,7 @@ app.use(cookieParser()); // Parsing des cookies
 app.use('/api', routes);
 
 // Route 404
-app.use('*', (req, res) => {
+app.use('*', (_req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: 'Route introuvable'
@@ -37,7 +36,7 @@ app.use('*', (req, res) => {
 });
 
 // Middleware de gestion des erreurs
-app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Une erreur est survenue sur le serveur' });
 });

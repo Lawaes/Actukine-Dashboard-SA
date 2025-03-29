@@ -3,10 +3,14 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IPost extends Document {
   title: string;
   description: string;
-  status: 'draft' | 'pending' | 'published' | 'rejected';
-  scheduledDate?: Date;
-  publishedDate?: Date;
-  author: mongoose.Types.ObjectId;
+  imageUrl?: string;
+  status: 'brouillon' | 'planifié' | 'publié';
+  publishDate?: Date;
+  platforms: string[];
+  postType?: string;
+  authorId: mongoose.Types.ObjectId;
+  visualResponsibleId?: mongoose.Types.ObjectId;
+  reviewResponsibleId?: mongoose.Types.ObjectId;
   visualValidated: boolean;
   reviewValidated: boolean;
   createdAt: Date;

@@ -1,3 +1,5 @@
+import { Request, Response, NextFunction } from 'express';
+
 /**
  * Classe d'erreur personnalisée pour l'API
  * Permet de standardiser la gestion des erreurs
@@ -28,18 +30,15 @@ export const errorHandler = (err: Error, _req: Request, res: Response, _next: Ne
  */
 export const setupUnhandledExceptionHandlers = () => {
   // Gérer les rejets de promesses non capturés
-  process.on('unhandledRejection', (reason: Error, promise: Promise<any>) => {
+  process.on('unhandledRejection', (reason: Error) => {
     console.error('Rejet de promesse non géré:', reason.message);
     console.error('Stack:', reason.stack);
-    // Ne pas terminer le processus, mais enregistrer et surveiller ces erreurs
   });
 
   // Gérer les exceptions non capturées
   process.on('uncaughtException', (error: Error) => {
     console.error('Exception non capturée:', error.message);
     console.error('Stack:', error.stack);
-    // En production, il peut être préférable de redémarrer proprement le serveur
-    // après avoir enregistré l'erreur, car l'état de l'application peut être compromis
     if (process.env.NODE_ENV === 'production') {
       console.error('Terminaison du processus à cause d\'une exception non capturée');
       process.exit(1);
